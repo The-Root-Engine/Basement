@@ -14,8 +14,4 @@ struct FRotator
     explicit FRotator(float InPitch, float InYaw, float InRoll) : Pitch(InPitch), Yaw(InYaw), Roll(InRoll) {}
 
     FQuat ToQuat();
-    
-    void Normalize();
-    
-    FRotator GetNormalized() const;
 };

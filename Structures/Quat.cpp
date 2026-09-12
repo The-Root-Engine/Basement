@@ -1,7 +1,8 @@
 // Root Engine / Basement
 
 #include "Quat.h"
-#include "Math.h"
+
+#include "../Math/Math.h"
 #include "Rotator.h"
 #include "Vector3D.h"
 
@@ -81,5 +82,3 @@ FMatrix4x4 FQuat::ToMatrix4x4() const
         0.f,                   0.f,                   0.f,                   1.f
     );
 }
-
-const FQuat FQuat::Identity = FQuat(0, 0, 0, 1);

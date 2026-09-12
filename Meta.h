@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Aliases.h"
+#include "Aliases/Common.h"
 
 namespace Meta
 {
@@ -35,7 +35,7 @@ namespace Meta
 	template<typename T> using RemoveConstVolatile = typename RemoveConstVolatilePrivate<T>::Type;
 
 	template<typename T>           struct RemoveExtentPrivate       { using Type = T; };
-	template<typename T, size_t N> struct RemoveExtentPrivate<T[N]> { using Type = T; };
+	template<typename T, usize N> struct RemoveExtentPrivate<T[N]> { using Type = T; };
 	template<typename T> using RemoveExtent = typename RemoveExtentPrivate<T>::Type;
 	
 	template<typename T> struct RemovePointerPrivate     { using Type = T; };
@@ -86,13 +86,9 @@ namespace Meta
 	template<>           struct IsIntegerPrivate<uint16> : TrueType  {};
 	template<>           struct IsIntegerPrivate<uint32> : TrueType  {};
 	template<>           struct IsIntegerPrivate<uint64> : TrueType  {};
-	template<>           struct IsIntegerPrivate<ssize > : TrueType  {};
-	template<>           struct IsIntegerPrivate<usize > : TrueType  {};
 	template<typename T> inline constexpr bool IsInteger = IsIntegerPrivate<T>::Value;
 	
 	template<typename T> struct IsFloatingPointPrivate           : FalseType {};
-	template<>           struct IsFloatingPointPrivate<float32>  : TrueType  {};
-	template<>           struct IsFloatingPointPrivate<float64>  : TrueType  {};
 	template<typename T> inline constexpr bool IsFloatingPoint = IsFloatingPointPrivate<T>::Value;
 	
 	template<typename T> struct IsArithmeticPrivate : Conditional<IsInteger<T> || IsFloatingPoint<T>, TrueType, FalseType> {};
@@ -103,7 +99,6 @@ namespace Meta
 	template<>           struct IsSignedPrivate<int16> : TrueType  {};
 	template<>           struct IsSignedPrivate<int32> : TrueType  {};
 	template<>           struct IsSignedPrivate<int64> : TrueType  {};
-	template<>           struct IsSignedPrivate<ssize> : TrueType  {};
 	template<typename T> inline constexpr bool IsSigned = IsSignedPrivate<T>::Value;
 	
 	template<typename T> struct IsUnsignedPrivate         : FalseType {};
@@ -111,11 +106,10 @@ namespace Meta
 	template<>           struct IsUnsignedPrivate<uint16> : TrueType  {};
 	template<>           struct IsUnsignedPrivate<uint32> : TrueType  {};
 	template<>           struct IsUnsignedPrivate<uint64> : TrueType  {};
-	template<>           struct IsUnsignedPrivate<usize > : TrueType  {};
 	template<typename T> inline constexpr bool IsUnsigned = IsUnsignedPrivate<T>::Value;
 
 	template<typename T>           struct IsArrayPrivate       : FalseType {};
-	template<typename T, size_t N> struct IsArrayPrivate<T[N]> : TrueType  {};
+	template<typename T, usize N> struct IsArrayPrivate<T[N]> : TrueType  {};
 	template<typename T> inline constexpr bool IsArray = IsArrayPrivate<T>::Value;
 
 	template<typename T>                   struct IsFunctionPrivate             : FalseType {};
@@ -168,12 +162,12 @@ namespace Meta
 		B = Move(Temp);
 	}
 	
-	template<size_t... Indices>           struct IndexSequence {};
-	template<size_t N, size_t... Indices> struct MakeIndexSequencePrivate : MakeIndexSequencePrivate<N - 1, N - 1, Indices...> {};
-	template<size_t... Indices>           struct MakeIndexSequencePrivate<0, Indices...> { using Type = IndexSequence<Indices...>; };
-	template<size_t N> using MakeIndexSequence = typename MakeIndexSequencePrivate<N>::Type;
+	template<usize... Indices>           struct IndexSequence {};
+	template<usize N, usize... Indices> struct MakeIndexSequencePrivate : MakeIndexSequencePrivate<N - 1, N - 1, Indices...> {};
+	template<usize... Indices>           struct MakeIndexSequencePrivate<0, Indices...> { using Type = IndexSequence<Indices...>; };
+	template<usize N> using MakeIndexSequence = typename MakeIndexSequencePrivate<N>::Type;
 	
-	template <typename Func, typename Tuple, size_t... Indices> constexpr decltype(auto) ApplyPrivate(Func&& InFunc, Tuple&& InTuple, IndexSequence<Indices...>) { return Forward<Func>(InFunc)(InTuple.template Get<Indices>()...); }
+	template <typename Func, typename Tuple, usize... Indices> constexpr decltype(auto) ApplyPrivate(Func&& InFunc, Tuple&& InTuple, IndexSequence<Indices...>) { return Forward<Func>(InFunc)(InTuple.template Get<Indices>()...); }
 	template <typename Func, typename Tuple> constexpr decltype(auto) Apply(Func&& InFunc, Tuple&& InTuple) { return ApplyPrivate(Forward<Func>(InFunc), Forward<Tuple>(InTuple), MakeIndexSequence<RemoveReference<Tuple>::Size>{} ); }
 	
 	template <typename T, typename Func, typename = void> struct HasMember                                                          : FalseType {};

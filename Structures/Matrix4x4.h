@@ -8,34 +8,42 @@
 #include "Vector4D.h"
 
 /** Стандартная Матрица 4 на 4 */
-struct FMatrix4x4 {
-    FVector4D Rows[4] = {
+struct FMatrix4x4
+{
+    FVector4D Rows[4] =
+    {
         FVector4D(1.f, 0.f, 0.f, 0.f),
         FVector4D(0.f, 1.f, 0.f, 0.f),
         FVector4D(0.f, 0.f, 1.f, 0.f),
         FVector4D(0.f, 0.f, 0.f, 1.f)
     };
     
-    explicit FMatrix4x4() : FMatrix4x4(1.f) {}
+    explicit constexpr FMatrix4x4() : FMatrix4x4(1.f) {}
     
-    explicit FMatrix4x4(float DiagonalValue) {
+    explicit constexpr FMatrix4x4(const float DiagonalValue)
+    {
         Rows[0] = FVector4D(DiagonalValue, 0, 0, 0);
         Rows[1] = FVector4D(0, DiagonalValue, 0, 0);
         Rows[2] = FVector4D(0, 0, DiagonalValue, 0);
         Rows[3] = FVector4D(0, 0, 0, DiagonalValue);
     }
 
-    explicit FMatrix4x4(const FVector4D& InA, const FVector4D& InB, const FVector4D& InC, const FVector4D& InD) {
+    explicit constexpr FMatrix4x4(const FVector4D& InA, const FVector4D& InB, const FVector4D& InC, const FVector4D& InD)
+    {
         Rows[0] = InA;
         Rows[1] = InB;
         Rows[2] = InC;
         Rows[3] = InD;
     }
-    explicit FMatrix4x4(
-        float AA, float AB, float AC, float AD,
-        float BA, float BB, float BC, float BD,
-        float CA, float CB, float CC, float CD,
-        float DA, float DB, float DC, float DD) {
+    
+    explicit constexpr FMatrix4x4
+    (
+        const float AA, const float AB, const float AC, const float AD,
+        const float BA, const float BB, const float BC, const float BD,
+        const float CA, const float CB, const float CC, const float CD,
+        const float DA, const float DB, const float DC, const float DD
+    )
+    {
         Rows[0] = FVector4D(AA, AB, AC, AD);
         Rows[1] = FVector4D(BA, BB, BC, BD);
         Rows[2] = FVector4D(CA, CB, CC, CD);
@@ -77,6 +85,15 @@ struct FMatrix4x4 {
 
     std::array<float,16> ToGLMatrix() const;
 
-    static constexpr FMatrix4x4 Identity;
-    static constexpr FMatrix4x4 Diagonal;
+    static const FMatrix4x4 Identity;
+    static const FMatrix4x4 Diagonal;
 };
+
+inline constexpr FMatrix4x4 FMatrix4x4::Identity = FMatrix4x4(1.f);
+inline constexpr FMatrix4x4 FMatrix4x4::Diagonal = FMatrix4x4
+(
+    FVector4D(1.f, 0.f, 0.f, 0.f),
+    FVector4D(0.f, 1.f, 0.f, 0.f),
+    FVector4D(0.f, 0.f, 1.f, 0.f),
+    FVector4D(0.f, 0.f, 0.f, 1.f)
+);

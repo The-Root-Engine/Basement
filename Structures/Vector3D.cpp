@@ -2,7 +2,10 @@
 
 #include "Vector3D.h"
 
-#include "Math.h"
+#include <iomanip>
+#include <sstream>
+
+#include "../Math/Math.h"
 
 float FVector3D::Length() const
 {
@@ -11,8 +14,8 @@ float FVector3D::Length() const
 
 FVector3D FVector3D::Normalize(const FVector3D& V)
 {
-    float len = FMath::Sqrt(V.X*V.X + V.Y*V.Y + V.Z*V.Z);
-    return FVector3D(V.X/len, V.Y/len, V.Z/len);
+    const float Len = FMath::Sqrt(V.X*V.X + V.Y*V.Y + V.Z*V.Z);
+    return FVector3D(V.X/Len, V.Y/Len, V.Z/Len);
 }
 
 float FVector3D::Dot(const FVector3D& A, const FVector3D& B)
@@ -41,13 +44,3 @@ std::string FVector3D::ToString() const
 
     return ss.str();
 }
-
-
-constexpr FVector3D FVector3D::ForwardVector   = FVector3D( 1.f,  0.f,  0.f);
-constexpr FVector3D FVector3D::RightVector     = FVector3D( 0.f,  1.f,  0.f);
-constexpr FVector3D FVector3D::UpVector        = FVector3D( 0.f,  0.f,  1.f);
-constexpr FVector3D FVector3D::BackwardVector  = FVector3D(-1.f,  0.f,  0.f);
-constexpr FVector3D FVector3D::LeftVector      = FVector3D( 0.f, -1.f,  0.f);
-constexpr FVector3D FVector3D::DownVector      = FVector3D( 0.f,  0.f, -1.f);
-constexpr FVector3D FVector3D::ZeroVector      = FVector3D( 0.f,  0.f,  0.f);
-constexpr FVector3D FVector3D::OneVector       = FVector3D( 1.f,  1.f,  1.f);

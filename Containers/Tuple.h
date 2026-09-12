@@ -2,14 +2,14 @@
 
 #pragma once
 
-#include "Meta.h"
+#include "../Basement.h"
 
 template<usize Index, typename T>
 struct TTupleLeaf
 {
 	T Value;
 	template<typename U>
-	constexpr TTupleLeaf(U&& InValue) : Value(Meta::Forward<U>(InValue)) {}
+	constexpr TTupleLeaf(U&& InValue) : Value(Forward<U>(InValue)) {}
 };
 
 template<usize Index, typename... Types>               struct TTupleElement;
@@ -23,7 +23,7 @@ template<usize... Indices, typename... Types>
 struct TTuplePrivate<Meta::IndexSequence<Indices...>, Types...> : public TTupleLeaf<Indices, Types>... 
 {
 	template<typename... Args>
-	constexpr TTuplePrivate(Args&&... InArgs) : TTupleLeaf<Indices, Types>(Meta::Forward<Args>(InArgs))... {}
+	constexpr TTuplePrivate(Args&&... InArgs) : TTupleLeaf<Indices, Types>(Forward<Args>(InArgs))... {}
 };
 
 template<typename... Types>
@@ -32,7 +32,7 @@ class TTuple : public TTuplePrivate<Meta::MakeIndexSequence<sizeof...(Types)>, T
 	using Super = TTuplePrivate<Meta::MakeIndexSequence<sizeof...(Types)>, Types...>;
 
 public:
-	template<typename... Args> constexpr TTuple(Args&&... InArgs) : Super(Meta::Forward<Args>(InArgs)...) {}
+	template<typename... Args> constexpr TTuple(Args&&... InArgs) : Super(Forward<Args>(InArgs)...) {}
 	
 	static constexpr usize Size = sizeof...(Types);
 	constexpr usize Num() const { return Size; }

@@ -2,7 +2,7 @@
 
 #include "Vector4D.h"
 
-#include "Math.h"
+#include "../Math/Math.h"
 
 float FVector4D::Length() const
 {
@@ -24,6 +24,3 @@ inline bool FVector4D::operator==(const FVector4D& Other) const
            FMath::IsNearlyEqual(Z, Other.Z) &&
            FMath::IsNearlyEqual(W, Other.W);
 }
-
-constexpr FVector4D FVector4D::ZeroVector = FVector4D(0.f);
-constexpr FVector4D FVector4D::OneVector  = FVector4D(1.f);

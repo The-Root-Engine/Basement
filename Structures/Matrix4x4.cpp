@@ -2,11 +2,10 @@
 
 #include "Matrix4x4.h"
 
+#include "../Math/Math.h"
+
 #include <iomanip>
 #include <sstream>
-
-#include "Math.h"
-#include "Quat.h"
 
 inline FMatrix4x4 FMatrix4x4::CreateScale(const FVector3D& Scale)
 {
@@ -157,11 +156,3 @@ std::string FMatrix4x4::ToString() const
 
     return ss.str();
 }
-
-constexpr FMatrix4x4 FMatrix4x4::Identity = FMatrix4x4(1.f);
-constexpr FMatrix4x4 FMatrix4x4::Diagonal = FMatrix4x4(
-        FVector4D(1.f, 0.f, 0.f, 0.f),
-        FVector4D(0.f, 1.f, 0.f, 0.f),
-        FVector4D(0.f, 0.f, 1.f, 0.f),
-        FVector4D(0.f, 0.f, 0.f, 1.f)
-    );

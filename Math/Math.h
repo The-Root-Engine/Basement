@@ -18,8 +18,8 @@ public:
 	template<typename T, typename U> 
 	static T Lerp(const T InA, const T InB, const U InAlpha) { return T(U(InA) + U(InB - InA) * InAlpha); }
 	
-    static bool IsNearlyZero(const float InF, const float InTolerance = FMathConstants::Epsilon) { return (InF > -Tolerance) && (InF < Tolerance); }
-    static bool IsNearlyEqual(const float InA, const float InB, const float InTolerance = FMathConstants::Epsilon) { return IsNearlyZero(InA - InB, Tolerance); }
+    static bool IsNearlyZero(const float InF, const float InTolerance = FMathConstants::Epsilon) { return (InF > -InTolerance) && (InF < InTolerance); }
+    static bool IsNearlyEqual(const float InA, const float InB, const float InTolerance = FMathConstants::Epsilon) { return IsNearlyZero(InA - InB, InTolerance); }
 	
     static float Sqrt(const float InF);
 	

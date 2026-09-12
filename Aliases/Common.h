@@ -15,9 +15,6 @@ using uint16  = uint16_t;
 using uint32  = uint32_t;
 using uint64  = uint64_t;
 
-using float32 = float;
-using float64 = double;
-
 using usize   = std::size_t;    // Signed Size
 using ssize   = std::ptrdiff_t; // Unsigned Size
 
@@ -30,9 +27,6 @@ static_assert(sizeof(uint8)   == 1, "Invalid uint8 size");
 static_assert(sizeof(uint16)  == 2, "Invalid uint16 size");
 static_assert(sizeof(uint32)  == 4, "Invalid uint32 size");
 static_assert(sizeof(uint64)  == 8, "Invalid uint64 size");
-
-static_assert(sizeof(float32) == 4, "Invalid float32 size");
-static_assert(sizeof(float64) == 8, "Invalid float64 size");
 
 static_assert(sizeof(ssize) >= sizeof(usize), "ssize must be at least as wide as usize");
 static_assert(sizeof(usize) == sizeof(void*), "usize must match pointer size");

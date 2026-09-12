@@ -2,18 +2,20 @@
 
 #pragma once
 
+#include "../Aliases/Common.h"
+#include "Vector2D.h"
 #include "Vector3D.h"
 
 struct FVector4D 
 {
     float X, Y, Z, W;
     
-    explicit FVector4D()                                               : X(0), Y(0), Z(0), W(0) {}
-    explicit FVector4D(float InXYZW)                                   : X(InXYZW), Y(InXYZW), Z(InXYZW), W(InXYZW) {}
-    explicit FVector4D(const FVector3D& InXYZ)                         : X(InXYZ.X), Y(InXYZ.Y), Z(InXYZ.Z), W(0) {}
-    explicit FVector4D(const FVector3D& InXYZ, float InW)              : X(InXYZ.X), Y(InXYZ.Y), Z(InXYZ.Z), W(InW) {}
-    explicit FVector4D(const FVector2D& AInXY, const FVector2D& BInXY) : X(AInXY.X), Y(AInXY.Y), Z(BInXY.X), W(BInXY.Y) {}
-    explicit FVector4D(float InX, float InY, float InZ, float InW)     : X(InX), Y(InY), Z(InZ), W(InW) {}
+    explicit constexpr FVector4D()                                               : X(0), Y(0), Z(0), W(0) {}
+    explicit constexpr FVector4D(float InXYZW)                                   : X(InXYZW), Y(InXYZW), Z(InXYZW), W(InXYZW) {}
+    explicit constexpr FVector4D(const FVector3D& InXYZ)                         : X(InXYZ.X), Y(InXYZ.Y), Z(InXYZ.Z), W(0) {}
+    explicit constexpr FVector4D(const FVector3D& InXYZ, float InW)              : X(InXYZ.X), Y(InXYZ.Y), Z(InXYZ.Z), W(InW) {}
+    explicit constexpr FVector4D(const FVector2D& AInXY, const FVector2D& BInXY) : X(AInXY.X), Y(AInXY.Y), Z(BInXY.X), W(BInXY.Y) {}
+    explicit constexpr FVector4D(float InX, float InY, float InZ, float InW)     : X(InX), Y(InY), Z(InZ), W(InW) {}
     //explicit FVector4D(const FQuat& InQuat)                            : X(InQuat.X), Y(InQuat.Y), Z(InQuat.Z), W(InQuat.W) {}
 
     FVector4D operator+(const FVector4D& Other) const { return FVector4D(X + Other.X, Y + Other.Y, Z + Other.Z, W + Other.W); }
@@ -41,7 +43,8 @@ struct FVector4D
     bool operator==(const FVector4D& Other) const;
     bool operator!=(const FVector4D& Other) const { return !(*this == Other); }
     
-    float operator[](const uint8 InIndex) const {
+    float operator[](const uint8 InIndex) const
+	{
         switch(InIndex) 
 		{
 		default:
@@ -52,7 +55,8 @@ struct FVector4D
         }
     }
 	
-    float& operator[](const uint8 InIndex) {
+    float& operator[](const uint8 InIndex)
+	{
         switch(InIndex) 
 		{
 		default:
@@ -63,6 +67,9 @@ struct FVector4D
         }
     }
 	
-    static constexpr FVector4D ZeroVector;
-    static constexpr FVector4D OneVector;
+    static const FVector4D ZeroVector;
+    static const FVector4D OneVector;
 };
+
+inline constexpr FVector4D FVector4D::ZeroVector = FVector4D(0.f);
+inline constexpr FVector4D FVector4D::OneVector  = FVector4D(1.f);

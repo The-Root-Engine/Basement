@@ -1,10 +1,10 @@
-// ...
+// Root Engine / Basement
 
 #pragma once
 
-#include "Aliases.h"
+#include "../Aliases/Common.h"
 
-#include <vector>
+#include "../Containers/Array.h"
 
 enum class EArchiveMode : uint8 { Saving, Loading };
 
@@ -12,51 +12,51 @@ struct FArchive
 {
 
 public:
-	explicit FArchive(std::vector<uint8>& InBuffer, const EArchiveMode InMode) : Buffer(InBuffer), Mode(InMode) {}
-
+	explicit FArchive(TArray<uint8>& InBuffer, const EArchiveMode InMode) : Mode(InMode), Buffer(&InBuffer) {}
+	
 	EArchiveMode GetMode() const { return Mode; }
 	bool IsLoading() const { return Mode == EArchiveMode::Loading; }
 	bool IsSaving()  const { return Mode == EArchiveMode::Saving;  }
 	bool HasError()  const { return bHasError; }
-	size_t Tell() const { return Offset; }
-
-	void Seek(const size_t InNewOffset)
+	usize Tell() const { return Offset; }
+	
+	void Seek(const usize InNewOffset)
 	{
-		if(InNewOffset < 0 || InNewOffset > static_cast<size_t>(Buffer.size()))
+		if(InNewOffset < 0 || InNewOffset > static_cast<usize>(Buffer->Num()))
 		{
 			bHasError = true;
 			return;
 		}
 		Offset = InNewOffset;
 	}
-
-	void Serialize(void* InDataPtr, const size_t InNum)
+	
+	void Serialize(void* InDataPtr, const usize InNum)
 	{
 		if(InNum <= 0 || bHasError) return;
-
+		
 		if(IsSaving())
 		{
-			const size_t OldSize = static_cast<size_t>(Buffer.size());
-			Buffer.resize(static_cast<size_t>(OldSize + InNum));
-			std::memcpy(Buffer.data() + OldSize, InDataPtr, InNum);
+			const usize OldSize = static_cast<usize>(Buffer->Num());
+			Buffer->Resize(static_cast<usize>(OldSize + InNum));
+			std::memcpy(Buffer->Data() + OldSize, InDataPtr, InNum);
 		}
 		else
 		{
-			const size_t End = Offset + InNum;
-			if(End > static_cast<size_t>(Buffer.size()))
+			const usize End = Offset + InNum;
+			if(End > static_cast<usize>(Buffer->Num()))
 			{
 				bHasError = true;
 				return;
 			}
-			std::memcpy(InDataPtr, Buffer.data() + Offset, InNum);
+			std::memcpy(InDataPtr, Buffer->Data() + Offset, InNum);
 			Offset += InNum;
 		}
 	}
 
 private:
 	EArchiveMode Mode = EArchiveMode::Saving;
-	std::vector<uint8>& Buffer;
-	size_t Offset = 0;
+	TArray<uint8>* Buffer;
+	usize Offset = 0;
 	bool bHasError = false;
 };
 
