@@ -1,3 +1,3 @@
 # Basement
 
-Basement core layer of Root Engine: Aliases, Structures, Containers, Templates and etc.
+Basement of Engine: Aliases, Structures, Containers, Templates, Allocators, and etc.
