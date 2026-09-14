@@ -37,7 +37,7 @@ public:
 		if(IsSaving())
 		{
 			const usize OldSize = static_cast<usize>(Buffer->Num());
-			Buffer->Resize(static_cast<usize>(OldSize + InNum));
+			Buffer->SetNum(static_cast<usize>(OldSize + InNum));
 			std::memcpy(Buffer->Data() + OldSize, InDataPtr, InNum);
 		}
 		else

@@ -45,7 +45,7 @@ public:
     
     // -----------------------------------------
     
-    void Resize(const uint32 InNewNum)
+    void SetNum(const uint32 InNewNum)
     {
         if(InNewNum > Capacity) Reserve(InNewNum);
         
@@ -148,11 +148,11 @@ public:
     /* */ T* Data() /* */ { return DataPtr; }
     const T* Data() const { return DataPtr; }
     
-    /* */ T& First() /* */ { return DataPtr[0]; }
-    const T& First() const { return DataPtr[0]; }
+    /* */ T* First() /* */ { return DataPtr[0]; }
+    const T* First() const { return DataPtr[0]; }
     
-    /* */ T& Last() /* */  { return DataPtr[Count - 1]; }
-    const T& Last() const  { return DataPtr[Count - 1]; }
+    /* */ T* Last() /* */  { return DataPtr[Count - 1]; }
+    const T* Last() const  { return DataPtr[Count - 1]; }
     
     uint32 Num()         const { return Count; }
     uint32 GetCapacity() const { return Capacity; }

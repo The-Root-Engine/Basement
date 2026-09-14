@@ -22,6 +22,7 @@ public:
     static bool IsNearlyEqual(const float InA, const float InB, const float InTolerance = FMathConstants::Epsilon) { return IsNearlyZero(InA - InB, InTolerance); }
 	
     static float Sqrt(const float InF);
+    static float Floor(const float InF);
 	
     static float Sin(const float InRadians);
     static float Cos(const float InRadians);

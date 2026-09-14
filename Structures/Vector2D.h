@@ -2,30 +2,63 @@
 
 #pragma once
 
-struct FVector2D 
+#include "../Aliases/Common.h"
+#include "../Math/Math.h"
+
+template<typename T>
+struct TVector2D
 {
-    float X, Y;
-
-    explicit constexpr FVector2D()                     : X(0), Y(0) {}
-    explicit constexpr FVector2D(float InXY)           : X(InXY), Y(InXY) {}
-    explicit constexpr FVector2D(float InX, float InY) : X(InX), Y(InY) {}
-
-    FVector2D operator+(const FVector2D& Other) const { return FVector2D(X + Other.X, Y + Other.Y); }
-    FVector2D operator-(const FVector2D& Other) const { return FVector2D(X - Other.X, Y - Other.Y); }
-    FVector2D operator*(const FVector2D& Other) const { return FVector2D(X * Other.X, Y * Other.Y); }
-    FVector2D operator*(float Scalar)           const { return FVector2D(X * Scalar, Y * Scalar); }
-
+    
+public:
+    T X;
+    T Y;
+    using ScalarType = T;
+    
+    constexpr TVector2D() : X(0), Y(0) {}
+    explicit constexpr TVector2D(const T InF) : X(InF), Y(InF) {}
+    explicit constexpr TVector2D(const T InX, const T InY) : X(InX), Y(InY) {}
+    template<typename U> constexpr TVector2D(const TVector2D<U>& InOther) : X(static_cast<T>(InOther.X)), Y(static_cast<T>(InOther.Y)) {}
+    
+    constexpr TVector2D operator-() const { return { -X, -Y }; }
+    constexpr TVector2D operator+(const TVector2D& InOther) const { return TVector2D(X + InOther.X, Y + InOther.Y); }
+    constexpr TVector2D operator-(const TVector2D& InOther) const { return TVector2D(X - InOther.X, Y - InOther.Y); }
+    constexpr TVector2D operator*(const TVector2D& InOther) const { return TVector2D(X * InOther.X, Y * InOther.Y); }
+    constexpr TVector2D operator/(const TVector2D& InOther) const { return TVector2D(X / InOther.X, Y / InOther.Y); }
+    constexpr TVector2D operator*(const T InScalar) const { return TVector2D(X * InScalar, Y * InScalar); }
+    constexpr TVector2D operator/(const T InScalar) const { return TVector2D(X / InScalar, Y / InScalar); }
+    
+    constexpr TVector2D& operator+=(const TVector2D& InOther) { *this = *this + InOther; return *this; }
+    constexpr TVector2D& operator-=(const TVector2D& InOther) { *this = *this - InOther; return *this; }
+    constexpr TVector2D& operator*=(const TVector2D& InOther) { *this = *this * InOther; return *this; }
+    constexpr TVector2D& operator/=(const TVector2D& InOther) { *this = *this / InOther; return *this; }
+    constexpr TVector2D& operator*=(const T InScalar) { *this = *this * InScalar; return *this; }
+    constexpr TVector2D& operator/=(const T InScalar) { *this = *this / InScalar; return *this; }
+    
     float LengthSquared() const { return X*X + Y*Y; }
-    float Length() const;
-    FVector2D GetSafeNormal() const;
-
-    static const FVector2D UpVector;
-    static const FVector2D RightVector;
-    static const FVector2D DownVector;
-    static const FVector2D LeftVector;
+    float Length() const { return FMath::Sqrt(LengthSquared()); }
+    TVector2D GetSafeNormal() const { const T Len = Length(); return FMath::IsNearlyZero(Len) ? TVector2D(0) : *this * (1.f / Len); }
+    TVector2D Floor() const { return TVector2D(FMath::Floor(X), FMath::Floor(Y)); }
+    
+    static const TVector2D UpVector;
+    static const TVector2D RightVector;
+    static const TVector2D DownVector;
+    static const TVector2D LeftVector;
 };
 
-inline constexpr FVector2D FVector2D::UpVector    = FVector2D(0.f, 1.f);
-inline constexpr FVector2D FVector2D::RightVector = FVector2D(1.f, 0.f);
-inline constexpr FVector2D FVector2D::DownVector  = FVector2D(0.f, -1.f);
-inline constexpr FVector2D FVector2D::LeftVector  = FVector2D(-1.f, 0.f);
+template<typename T> inline constexpr TVector2D<T> TVector2D<T>::UpVector    = TVector2D( 0,  1);
+template<typename T> inline constexpr TVector2D<T> TVector2D<T>::RightVector = TVector2D( 1,  0);
+template<typename T> inline constexpr TVector2D<T> TVector2D<T>::DownVector  = TVector2D( 0, -1);
+template<typename T> inline constexpr TVector2D<T> TVector2D<T>::LeftVector  = TVector2D(-1,  0);
+
+using FVector2DInt8   = TVector2D<int8  >;
+using FVector2DInt16  = TVector2D<int16 >;
+using FVector2DInt32  = TVector2D<int32 >;
+using FVector2DInt64  = TVector2D<int64 >;
+using FVector2DUint8  = TVector2D<uint8 >;
+using FVector2DUint16 = TVector2D<uint16>;
+using FVector2DUint32 = TVector2D<uint32>;
+using FVector2DUint64 = TVector2D<uint64>;
+using FVector2DFloat  = TVector2D<float >;
+using FVector2DDouble = TVector2D<double>;
+
+using FVector2D = FVector2DFloat;

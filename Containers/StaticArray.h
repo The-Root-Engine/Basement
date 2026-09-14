@@ -4,7 +4,7 @@
 
 #include "../Aliases/Common.h"
 
-template<typename T, usize N>
+template<typename T, uint32 N>
 struct TStaticArray
 {
 	
@@ -12,22 +12,34 @@ public:
 	constexpr TStaticArray() = default;
 	
 	template<typename... Args>
-	constexpr TStaticArray(Args&&... InArgs) : Data{T(InArgs)...}
+	constexpr TStaticArray(Args&&... InArgs) : DataRaw{ T(InArgs)... }
 	{
-		static_assert(sizeof...(Args) == N, "TStaticArray: Wrong number of elements");
+		static_assert(sizeof...(Args) == N, "TStaticArray: Wrong number of elements!");
 	}
 	
-	constexpr /* */ T& operator[](usize InIndex) /* */ { return Data[InIndex]; }
-	constexpr const T& operator[](usize InIndex) const { return Data[InIndex]; }
+	/* */ T& operator[](const uint32 InIndex) /* */ { return DataRaw[InIndex]; }
+	const T& operator[](const uint32 InIndex) const { return DataRaw[InIndex]; }
+    
+	/* */ T* Data() /* */ { return DataRaw; }
+	const T* Data() const { return DataRaw; }
+    
+	/* */ T* First() /* */ { return DataRaw[0]; }
+	const T* First() const { return DataRaw[0]; }
+    
+	/* */ T* Last() /* */  { return DataRaw[N - 1]; }
+	const T* Last() const  { return DataRaw[N - 1]; }
 	
-	constexpr /* */ T* Begin() /* */ { return Data; }
-	constexpr /* */ T* End()   /* */ { return Data + N; }
-	constexpr const T* Begin() const { return Data; }
-	constexpr const T* End()   const { return Data + N; }
+	static constexpr uint32 Num() { return N; }
 	
-	static constexpr usize Num() { return N; }
-	constexpr void Fill(const T& InValue) { for(usize i = 0; i < N; ++i) Data[i] = InValue; }
+	T* begin() { return DataRaw; }
+	T* end()   { return DataRaw + N; }
+    
+	const T* begin() const noexcept { return DataRaw; }
+	const T* end()   const noexcept { return DataRaw + N; }
+    
+	const T* cbegin() const noexcept { return DataRaw; }
+	const T* cend()   const noexcept { return DataRaw + N; }
 
 private:
-	T Data[N];
+	T DataRaw[N];
 };
