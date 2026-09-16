@@ -36,18 +36,20 @@ public:
     
     bool IsValid() const { return Handle != INVALID_HANDLE_VALUE; }
     
-    bool Read(void* Destination, const usize BytesToRead, usize& OutBytesRead) const
+    bool Read(void* OutDestination, const usize BytesToRead, usize& OutBytesRead) const
     {
         DWORD BytesRead = 0;
-        const BOOL bSuccess = ::ReadFile(Handle, Destination, static_cast<DWORD>(BytesToRead), &BytesRead, nullptr);
+        const BOOL bSuccess = ::ReadFile(Handle, OutDestination, static_cast<DWORD>(BytesToRead), &BytesRead, nullptr);
         OutBytesRead = static_cast<usize>(BytesRead);
         return bSuccess != 0;
     }
     
-    bool Write(const void* Source, const usize BytesToWrite) const
+    bool Read(void* OutDestination) const { usize BytesRead = 0; return Read(OutDestination, GetSize(), BytesRead); }
+    
+    bool Write(const void* InSource, const usize BytesToWrite) const
     {
         DWORD BytesWritten = 0;
-        const BOOL bSuccess = ::WriteFile(Handle, Source, static_cast<DWORD>(BytesToWrite), &BytesWritten, nullptr);
+        const BOOL bSuccess = ::WriteFile(Handle, InSource, static_cast<DWORD>(BytesToWrite), &BytesWritten, nullptr);
         return bSuccess && (BytesWritten == BytesToWrite);
     }
     

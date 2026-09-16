@@ -72,7 +72,7 @@ namespace Meta
 	template<typename T, typename U> struct IsSamePrivate       : FalseType {};
 	template<typename T>             struct IsSamePrivate<T, T> : TrueType  {};
 	template<typename T, typename U> inline constexpr bool IsSame = IsSamePrivate<T, U>::Value;
-
+	
 	template<typename T> struct IsVoidPrivate       : FalseType {};
 	template<>           struct IsVoidPrivate<void> : TrueType  {};
 	template<typename T> inline constexpr bool IsVoid = IsVoidPrivate<T>::Value;
@@ -107,15 +107,17 @@ namespace Meta
 	template<>           struct IsUnsignedPrivate<uint32> : TrueType  {};
 	template<>           struct IsUnsignedPrivate<uint64> : TrueType  {};
 	template<typename T> inline constexpr bool IsUnsigned = IsUnsignedPrivate<T>::Value;
-
-	template<typename T>           struct IsArrayPrivate       : FalseType {};
+	
+	template<typename T> inline constexpr bool IsEnum = __is_enum(T);
+	
+	template<typename T>          struct IsArrayPrivate       : FalseType {};
 	template<typename T, usize N> struct IsArrayPrivate<T[N]> : TrueType  {};
 	template<typename T> inline constexpr bool IsArray = IsArrayPrivate<T>::Value;
-
+	
 	template<typename T>                   struct IsFunctionPrivate             : FalseType {};
 	template<typename R, typename... Args> struct IsFunctionPrivate<R(Args...)> : TrueType  {};
 	template<typename T> inline constexpr bool IsFunction = IsFunctionPrivate<T>::Value;
-
+	
 	template<typename T>
 	struct DecayPrivate
 	{

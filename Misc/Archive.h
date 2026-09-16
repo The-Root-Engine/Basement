@@ -76,7 +76,24 @@ inline FArchive& operator^(FArchive& Ar, double& Value) { Ar.Serialize(&Value, s
 inline FArchive& operator^(FArchive& Ar, bool& bValue)
 {
 	uint8 Byte = bValue ? 1 : 0;
-	Ar.Serialize(&Byte, sizeof(Byte));
+	Ar ^ Byte;
 	if(Ar.IsLoading()) bValue = (Byte != 0);
+	return Ar;
+}
+
+template<typename Enum>
+inline Meta::EnableIf<Meta::IsEnum<Enum>, FArchive&> operator^(FArchive& Ar, Enum& EnumValue)
+{
+	using UnderlyingType = __underlying_type(Enum);
+	UnderlyingType EnumRaw = static_cast<UnderlyingType>(EnumValue);
+	Ar ^ EnumRaw;
+	if(Ar.IsLoading()) EnumValue = static_cast<Enum>(EnumRaw);
+	return Ar;
+}
+
+template<typename T>
+inline Meta::EnableIf<!Meta::IsEnum<T>, FArchive&> operator^(FArchive& Ar, T& Value)
+{
+	Ar.Serialize(&Value, sizeof(T));
 	return Ar;
 }

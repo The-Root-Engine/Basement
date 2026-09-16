@@ -12,6 +12,8 @@ class TArray
 public:
     constexpr TArray() : DataPtr(nullptr), Count(0), Capacity(0) {}
 	
+    constexpr TArray(uint32 InNum) : DataPtr(nullptr), Count(0), Capacity(0) { SetNum(InNum); }
+	
     ~TArray() { Empty(); if(DataPtr) AllocatorInstance.Free(DataPtr); }
 	
     TArray(const TArray&)            = delete;

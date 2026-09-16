@@ -4,6 +4,7 @@
 
 #include "../Allocators/DefaultAllocator.h"
 #include "../Basement.h"
+#include "../Misc/Archive.h"
 
 template<typename T, uint32 N>
 class TFixedArray
@@ -20,11 +21,23 @@ public:
 	
     ~TFixedArray() { Empty(); }
 	
-    TFixedArray(const TFixedArray&)            = delete;
-    TFixedArray& operator=(const TFixedArray&) = delete;
+    TFixedArray(const TFixedArray& InOther) noexcept
+    {
+        Count = InOther.Count;
+        for(uint32 i = 0; i < InOther.Count; ++i) DataRaw[i] = InOther.DataRaw[i];
+    }
+    
+    TFixedArray& operator=(const TFixedArray& InOther) noexcept
+    {
+        if(this == &InOther) return *this;
+        
+        Count = InOther.Count;
+        for(uint32 i = 0; i < InOther.Count; ++i) DataRaw[i] = InOther.DataRaw[i];
+    }
 	
     TFixedArray(TFixedArray&& InOther) noexcept : Count(InOther.Count)
     {
+        Count = InOther.Count;
         for(uint32 i = 0; i < Count; ++i) DataRaw[i] = Move(InOther.DataRaw[i]);
         InOther.Count = 0;
     }
@@ -33,8 +46,13 @@ public:
     {
         if(this == &InOther) return *this;
         
+        Count = InOther.Count;
+        for(uint32 i = 0; i < InOther.Count; ++i) DataRaw[i] = Move(InOther.DataRaw[i]);
+        
+        /*
         DataRaw = InOther.DataRaw;
         Count   = InOther.Count;
+        */
         
         InOther.Count = 0;
         
@@ -74,7 +92,8 @@ public:
             return;
         }
         
-        new(&DataRaw[Count]) T(InValue);
+        // new(&DataRaw[Count]) T(InValue);
+        DataRaw[Count] = InValue;
         ++Count;
     }
 	
@@ -86,7 +105,8 @@ public:
             return;
         }
         
-        new(&DataRaw[Count]) T(Move(InValue));
+        // new(&DataRaw[Count]) T(Move(InValue));
+        DataRaw[Count] = Move(InValue);
         ++Count;
     }
 	
@@ -99,8 +119,11 @@ public:
             return Last();
         }
         
+        // T* Slot = &DataRaw[Count];
+        // new(Slot) T(Forward<Args>(InArgs)...);
+        DataRaw[Count] = T(Forward<Args>(InArgs)...);
+        // return *Slot;
         T* Slot = &DataRaw[Count];
-        new(Slot) T(Forward<Args>(InArgs)...);
         ++Count;
         return *Slot;
     }
@@ -128,14 +151,14 @@ public:
     /* */ T& operator[](const uint32 InIndex) /* */ { return DataRaw[InIndex]; }
     const T& operator[](const uint32 InIndex) const { return DataRaw[InIndex]; }
     
-    /* */ T* Data() /* */ { return DataRaw; }
-    const T* Data() const { return DataRaw; }
+    /* */ T& Data() /* */ { return DataRaw; }
+    const T& Data() const { return DataRaw; }
     
-    /* */ T* First() /* */ { return DataRaw[0]; }
-    const T* First() const { return DataRaw[0]; }
+    /* */ T& First() /* */ { return DataRaw[0]; }
+    const T& First() const { return DataRaw[0]; }
     
-    /* */ T* Last() /* */  { return DataRaw[Count - 1]; }
-    const T* Last() const  { return DataRaw[Count - 1]; }
+    /* */ T& Last() /* */  { return DataRaw[Count - 1]; }
+    const T& Last() const  { return DataRaw[Count - 1]; }
     
     /*            */ uint32 Num()   const    { return Count; }
     static constexpr uint32 GetCapacity()    { return N; }
@@ -150,6 +173,12 @@ public:
     
     const T* cbegin() const noexcept { return DataRaw; }
     const T* cend()   const noexcept { return DataRaw + Count; }
+    
+    void Serialize(FArchive& Ar)
+    {
+        Ar ^ Count;
+        for(uint32 i = 0; i < Count; ++i) Ar ^ DataRaw[i];
+    }
 
 private:
 	T DataRaw[N];
