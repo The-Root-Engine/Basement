@@ -3,7 +3,6 @@
 #pragma once
 
 #include "../Aliases/Common.h"
-
 #include "../Containers/Array.h"
 
 enum class EArchiveMode : uint8 { Saving, Loading };

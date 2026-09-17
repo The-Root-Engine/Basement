@@ -33,6 +33,7 @@ public:
         
         Count = InOther.Count;
         for(uint32 i = 0; i < InOther.Count; ++i) DataRaw[i] = InOther.DataRaw[i];
+        return *this;
     }
 	
     TFixedArray(TFixedArray&& InOther) noexcept : Count(InOther.Count)
@@ -65,7 +66,7 @@ public:
     {
         if(InNewNum > N)
         {
-            printf("TFixedArray Exception: Overflow!");
+            printf("TFixedArray Exception: Overflow! (SetNum)\n");
             return;
         }
         
@@ -88,7 +89,7 @@ public:
     {
         if(Count == N)
         {
-            printf("TFixedArray Exception: Overflow!");
+            printf("TFixedArray Exception: Overflow! (Add &)\n");
             return;
         }
         
@@ -101,7 +102,7 @@ public:
     {
         if(Count == N)
         {
-            printf("TFixedArray Exception: Overflow!");
+            printf("TFixedArray Exception: Overflow! (Add &&)\n");
             return;
         }
         
@@ -115,7 +116,7 @@ public:
     {
         if(Count == N)
         {
-            printf("TFixedArray Exception: Overflow!");
+            printf("TFixedArray Exception: Overflow! (Emplace)\n");
             return Last();
         }
         
@@ -160,10 +161,10 @@ public:
     /* */ T& Last() /* */  { return DataRaw[Count - 1]; }
     const T& Last() const  { return DataRaw[Count - 1]; }
     
-    /*            */ uint32 Num()   const    { return Count; }
-    static constexpr uint32 GetCapacity()    { return N; }
-    /*            */ uint32 GetSlack() const { return N - Count; }
-    /*            */ bool   IsEmpty()  const { return Count == 0; }
+    /*            */ uint32 Num()         const { return Count; }
+    static constexpr uint32 GetCapacity() /* */ { return N; }
+    /*            */ uint32 GetSlack()    const { return N - Count; }
+    /*            */ bool   IsEmpty()     const { return Count == 0; }
 	
     T* begin() { return DataRaw; }
     T* end()   { return DataRaw + Count; }
