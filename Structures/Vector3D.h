@@ -2,7 +2,8 @@
 
 #pragma once
 
-#include "String.h"
+#include "../Aliases/Common.h"
+#include "../Containers/String.h"
 #include "Vector2D.h"
 
 struct FVector3D 

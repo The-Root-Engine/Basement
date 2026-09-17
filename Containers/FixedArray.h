@@ -152,8 +152,8 @@ public:
     /* */ T& operator[](const uint32 InIndex) /* */ { return DataRaw[InIndex]; }
     const T& operator[](const uint32 InIndex) const { return DataRaw[InIndex]; }
     
-    /* */ T& Data() /* */ { return DataRaw; }
-    const T& Data() const { return DataRaw; }
+    /* */ T* Data() /* */ { return DataRaw; }
+    const T* Data() const { return DataRaw; }
     
     /* */ T& First() /* */ { return DataRaw[0]; }
     const T& First() const { return DataRaw[0]; }

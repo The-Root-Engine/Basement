@@ -13,6 +13,9 @@ public:
     
     TBitset() = default;
     
+    bool operator==(const TBitset& InOther) const { return memcmp(Blocks, InOther.Blocks, sizeof(Blocks)) == 0; }
+    bool operator!=(const TBitset& InOther) const { return !(*this == InOther); }
+    
     void Set(const uint32 InBitIndex, const bool bValue)
     {
         const uint32 BlockIndex = GetBlockIndex(InBitIndex);
@@ -29,7 +32,7 @@ public:
     void Empty() { Fill(false); }
     void Fill(const bool bValue) { memset(Blocks, (~static_cast<BlockType>(0)) * bValue, sizeof(Blocks)); }
 
-private:
+// private:
     static constexpr uint32 BitsPerBlock = sizeof(BlockType) * 8;
     static constexpr uint32 NumBlocks = (NumBits + BitsPerBlock - 1) / BitsPerBlock;
     
