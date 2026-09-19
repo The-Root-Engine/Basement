@@ -2,9 +2,10 @@
 
 #pragma once
 
-#include "../../Enums/Platform.h"
 #include "../PlatformFile.h"
-#include "../../Structures/UniquePtr.h"
+#include "../../Enums/Platform.h"
+#include "../../Containers/UniquePtr.h"
+#include "../../Containers/Path.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <string>
@@ -14,7 +15,7 @@ class FWindowsPlatformIO
 {
     
 public:
-    static FUniquePtr<FPlatformFile> OpenFile(const std::wstring& Path, const EFileAccessFlags Flags)
+    static FUniquePtr<FPlatformFile> OpenFile(const FPath& Path, const EFileAccessFlags Flags)
     {
         uint32 DesiredAccess = 0;
         constexpr uint32 ShareMode = FILE_SHARE_READ;
@@ -43,13 +44,13 @@ public:
         return std::make_unique<FPlatformFile>(hFile);
     }
     
-    static bool FileExists(const std::wstring& Path)
+    static bool FileExists(const FPath& Path)
     {
         const DWORD Attr = ::GetFileAttributesW(Path.c_str());
         return (Attr != INVALID_FILE_ATTRIBUTES && !(Attr & FILE_ATTRIBUTE_DIRECTORY));
     }
     
-    static bool DeleteFile(const std::wstring& Path)
+    static bool DeleteFile(const FPath& Path)
     {
         return ::DeleteFileW(Path.c_str()) != 0;
     }

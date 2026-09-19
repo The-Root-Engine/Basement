@@ -51,10 +51,7 @@ public:
             if(bUsingInlineBuffer && InNewSize > sizeof(InlineBuffer))
             {
                 void* NewHeapPtr = SecondaryAllocatorInstance.Allocate(InNewSize);
-                
-                if(InPtr && NewHeapPtr)
-                    std::memcpy(NewHeapPtr, InPtr, sizeof(InlineBuffer));
-                
+                if(InPtr && NewHeapPtr) memcpy(NewHeapPtr, InPtr, sizeof(InlineBuffer));
                 bUsingInlineBuffer = false;
                 return NewHeapPtr;
             }

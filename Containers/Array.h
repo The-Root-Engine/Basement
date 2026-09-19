@@ -5,20 +5,76 @@
 #include "../Allocators/DefaultAllocator.h"
 #include "../Basement.h"
 
+#include <cstring>
+#include <new>
+
 template<typename T, typename FAllocator = FDefaultAllocator>
 class TArray
 {
     
 public:
     constexpr TArray() : DataPtr(nullptr), Count(0), Capacity(0) {}
-	
     constexpr TArray(uint32 InNum) : DataPtr(nullptr), Count(0), Capacity(0) { SetNum(InNum); }
-	
     ~TArray() { Empty(); if(DataPtr) AllocatorInstance.Free(DataPtr); }
-	
-    TArray(const TArray&)            = delete;
-    TArray& operator=(const TArray&) = delete;
-	
+    
+    TArray(const TArray& InOther) : DataPtr(nullptr), Count(0), Capacity(0), AllocatorInstance(InOther.AllocatorInstance)
+    {
+        if(InOther.Count > 0)
+        {
+            Capacity = InOther.Count;
+            DataPtr  = static_cast<T*>(AllocatorInstance.Allocate(Capacity * sizeof(T)));
+            
+            if constexpr(std::is_trivially_copyable_v<T>)
+            {
+                memcpy(DataPtr, InOther.DataPtr, InOther.Count * sizeof(T));
+                Count = InOther.Count;
+            }
+            else
+            {
+                for(uint32 i = 0; i < InOther.Count; ++i)
+                {
+                    new(&DataPtr[i]) T(InOther.DataPtr[i]);
+                    ++Count;
+                }
+            }
+        }
+    }
+    
+    TArray& operator=(const TArray& InOther)
+    {
+        if(this == &InOther) return *this;
+        
+        Empty();
+        if(DataPtr) AllocatorInstance.Free(DataPtr);
+        
+        DataPtr           = nullptr;
+        Count             = 0;
+        Capacity          = 0;
+        AllocatorInstance = InOther.AllocatorInstance;
+        
+        if(InOther.Count > 0)
+        {
+            Capacity = InOther.Count;
+            DataPtr  = static_cast<T*>(AllocatorInstance.Allocate(Capacity * sizeof(T)));
+            
+            if constexpr(std::is_trivially_copyable_v<T>)
+            {
+                memcpy(DataPtr, InOther.DataPtr, InOther.Count * sizeof(T));
+                Count = InOther.Count;
+            }
+            else
+            {
+                for(uint32 i = 0; i < InOther.Count; ++i)
+                {
+                    new(&DataPtr[i]) T(InOther.DataPtr[i]);
+                    ++Count;
+                }
+            }
+        }
+        
+        return *this;
+    }
+    
     TArray(TArray&& InOther) noexcept : DataPtr(InOther.DataPtr), Count(InOther.Count), Capacity(InOther.Capacity), AllocatorInstance(Move(InOther.AllocatorInstance))
     {
         InOther.DataPtr  = nullptr;
@@ -31,7 +87,7 @@ public:
         if(this == &InOther) return *this;
         
         Empty();
-        if(DataPtr) FAllocator::Deallocate(DataPtr);
+        if(DataPtr) AllocatorInstance.Free(DataPtr);
         
         DataPtr  = InOther.DataPtr;
         Count    = InOther.Count;
@@ -62,7 +118,7 @@ public:
     
     void Reserve(const uint32 InNewCapacity)
     {
-        if (InNewCapacity > Capacity)
+        if(InNewCapacity > Capacity)
         {
             if constexpr(std::is_trivially_copyable_v<T>)
             {

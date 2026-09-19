@@ -4,6 +4,7 @@
 
 #include "../Allocators/DefaultAllocator.h"
 #include "../Basement.h"
+#include "../HAL/PlatformDebug.h"
 #include "../Misc/Archive.h"
 
 template<typename T, uint32 N>
@@ -66,7 +67,7 @@ public:
     {
         if(InNewNum > N)
         {
-            printf("TFixedArray Exception: Overflow! (SetNum)\n");
+            FPlatformDebug::Printf("TFixedArray Exception: Overflow! (SetNum)\n");
             return;
         }
         
@@ -89,7 +90,7 @@ public:
     {
         if(Count == N)
         {
-            printf("TFixedArray Exception: Overflow! (Add &)\n");
+            FPlatformDebug::Printf("TFixedArray Exception: Overflow! (Add &)\n");
             return;
         }
         
@@ -102,7 +103,7 @@ public:
     {
         if(Count == N)
         {
-            printf("TFixedArray Exception: Overflow! (Add &&)\n");
+            FPlatformDebug::Printf("TFixedArray Exception: Overflow! (Add &&)\n");
             return;
         }
         
@@ -116,7 +117,7 @@ public:
     {
         if(Count == N)
         {
-            printf("TFixedArray Exception: Overflow! (Emplace)\n");
+            FPlatformDebug::Printf("TFixedArray Exception: Overflow! (Emplace)\n");
             return Last();
         }
         
@@ -136,19 +137,44 @@ public:
         DataRaw[Count].~T();
     }
 	
-    void RemoveAt(const uint32 InIndex)
+    bool RemoveAt(const uint32 InIndex)
     {
-        if(InIndex >= Count) return;
+        if(InIndex >= Count) return false;
+        
 		DataRaw[InIndex].~T();
-		
         for(uint32 i = InIndex; i + 1 < Count; ++i)
         {
-            new(&DataRaw[i]) T(Move(DataRaw[i + 1]));
+            DataRaw[i] = Move(DataRaw[i + 1]);
             DataRaw[i + 1].~T();
         }
+        
         --Count;
+        return true;
     }
-	
+    
+    template <typename PredicateType>
+    uint32 RemoveAll(PredicateType InPredicate)
+    {
+        const uint32 OriginalCount = Count;
+        uint32 WriteIndex = 0;
+        
+        for(uint32 ReadIndex = 0; ReadIndex < OriginalCount; ++ReadIndex)
+        {
+            if(InPredicate(DataRaw[ReadIndex])) continue;
+            if(WriteIndex != ReadIndex) DataRaw[WriteIndex] = Move(DataRaw[ReadIndex]);
+            ++WriteIndex;
+        }
+        
+        const uint32 RemovedCount = OriginalCount - WriteIndex;
+        if(RemovedCount > 0)
+        {
+            for(uint32 i = WriteIndex; i < OriginalCount; ++i) DataRaw[i].~T();
+            Count = WriteIndex;
+        }
+        
+        return RemovedCount;
+    }
+    
     /* */ T& operator[](const uint32 InIndex) /* */ { return DataRaw[InIndex]; }
     const T& operator[](const uint32 InIndex) const { return DataRaw[InIndex]; }
     

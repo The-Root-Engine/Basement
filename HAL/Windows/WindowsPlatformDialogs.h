@@ -2,6 +2,9 @@
 
 #pragma once
 
+#include "../../Aliases/Common.h"
+#include "../../Containers/Path.h"
+
 #include <shobjidl.h>
 #include <string>
 #include <vector>
@@ -9,7 +12,7 @@
 class FWindowsPlatformDialogs
 {
 public:
-    static bool OpenFileDialog(void* ParentWindowHandle, const std::wstring& DialogTitle, const std::wstring& DefaultPath, const std::wstring& FileTypes, const bool bAllowMultipleFiles, TArray<std::wstring>& OutFilenames)
+    static bool OpenFileDialog(void* ParentWindowHandle, const FPath& DialogTitle, const FPath& DefaultPath, const FPath& FileTypes, const bool bAllowMultipleFiles, TArray<FPath>& OutFilenames)
     {
         HRESULT hr = ::CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
         

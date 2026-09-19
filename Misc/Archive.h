@@ -37,7 +37,7 @@ public:
 		{
 			const usize OldSize = static_cast<usize>(Buffer->Num());
 			Buffer->SetNum(static_cast<usize>(OldSize + InNum));
-			std::memcpy(Buffer->Data() + OldSize, InDataPtr, InNum);
+			memcpy(Buffer->Data() + OldSize, InDataPtr, InNum);
 		}
 		else
 		{
@@ -47,7 +47,7 @@ public:
 				bHasError = true;
 				return;
 			}
-			std::memcpy(InDataPtr, Buffer->Data() + Offset, InNum);
+			memcpy(InDataPtr, Buffer->Data() + Offset, InNum);
 			Offset += InNum;
 		}
 	}
