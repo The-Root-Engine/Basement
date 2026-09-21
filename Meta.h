@@ -164,9 +164,9 @@ namespace Meta
 		B = Move(Temp);
 	}
 	
-	template<usize... Indices>           struct IndexSequence {};
+	template<usize... Indices>          struct IndexSequence {};
 	template<usize N, usize... Indices> struct MakeIndexSequencePrivate : MakeIndexSequencePrivate<N - 1, N - 1, Indices...> {};
-	template<usize... Indices>           struct MakeIndexSequencePrivate<0, Indices...> { using Type = IndexSequence<Indices...>; };
+	template<usize... Indices>          struct MakeIndexSequencePrivate<0, Indices...> { using Type = IndexSequence<Indices...>; };
 	template<usize N> using MakeIndexSequence = typename MakeIndexSequencePrivate<N>::Type;
 	
 	template <typename Func, typename Tuple, usize... Indices> constexpr decltype(auto) ApplyPrivate(Func&& InFunc, Tuple&& InTuple, IndexSequence<Indices...>) { return Forward<Func>(InFunc)(InTuple.template Get<Indices>()...); }
@@ -174,11 +174,4 @@ namespace Meta
 	
 	template <typename T, typename Func, typename = void> struct HasMember                                                          : FalseType {};
 	template <typename T, typename Func>                  struct HasMember<T, Func, Void<decltype(DeclVal<Func>()(DeclVal<T&>()))>> : TrueType  {};
-	
-	template <typename T, typename = void> struct IsContainerPrivate                                                : FalseType {};
-	template <typename T>                  struct IsContainerPrivate<T, Void<decltype(DeclVal<T&>().ChildWidgets)>> : TrueType  {};
-	template <typename T> inline constexpr bool IsContainer = IsContainerPrivate<Decay<T>>::Value;
-	
-	template<typename T> using EnableIfWrapper   = EnableIf<!IsContainer<T>, T>;
-	template<typename T> using EnableIfContainer = EnableIf< IsContainer<T>, T>;
 }

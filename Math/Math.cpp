@@ -6,6 +6,7 @@
 
 float FMath::Sqrt(const float InF)  { return sqrt(InF); }
 float FMath::Floor(const float InF) { return floor(InF); }
+float FMath::Ceil(const float InF) { return ceil(InF); }
 
 float FMath::Sin(const float InRadians) { return sin(InRadians); }
 float FMath::Cos(const float InRadians) { return cos(InRadians); }

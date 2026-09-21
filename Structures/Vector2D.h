@@ -24,6 +24,9 @@ public:
     constexpr TVector2D operator-(const TVector2D& InOther) const { return TVector2D(X - InOther.X, Y - InOther.Y); }
     constexpr TVector2D operator*(const TVector2D& InOther) const { return TVector2D(X * InOther.X, Y * InOther.Y); }
     constexpr TVector2D operator/(const TVector2D& InOther) const { return TVector2D(X / InOther.X, Y / InOther.Y); }
+    
+    constexpr TVector2D operator+(const T InScalar) const { return TVector2D(X + InScalar, Y + InScalar); }
+    constexpr TVector2D operator-(const T InScalar) const { return TVector2D(X - InScalar, Y - InScalar); }
     constexpr TVector2D operator*(const T InScalar) const { return TVector2D(X * InScalar, Y * InScalar); }
     constexpr TVector2D operator/(const T InScalar) const { return TVector2D(X / InScalar, Y / InScalar); }
     
@@ -31,19 +34,26 @@ public:
     constexpr TVector2D& operator-=(const TVector2D& InOther) { *this = *this - InOther; return *this; }
     constexpr TVector2D& operator*=(const TVector2D& InOther) { *this = *this * InOther; return *this; }
     constexpr TVector2D& operator/=(const TVector2D& InOther) { *this = *this / InOther; return *this; }
+    
+    constexpr TVector2D& operator+=(const T InScalar) { *this = *this + InScalar; return *this; }
+    constexpr TVector2D& operator-=(const T InScalar) { *this = *this - InScalar; return *this; }
     constexpr TVector2D& operator*=(const T InScalar) { *this = *this * InScalar; return *this; }
     constexpr TVector2D& operator/=(const T InScalar) { *this = *this / InScalar; return *this; }
     
-    float LengthSquared() const { return X*X + Y*Y; }
-    float Length() const { return FMath::Sqrt(LengthSquared()); }
-    TVector2D GetSafeNormal() const { const T Len = Length(); return FMath::IsNearlyZero(Len) ? TVector2D(0) : *this * (1.f / Len); }
     TVector2D Floor() const { return TVector2D(FMath::Floor(X), FMath::Floor(Y)); }
+    TVector2D Ceil () const { return TVector2D(FMath::Ceil (X), FMath::Ceil (Y)); }
+    
+    static const TVector2D ZeroVector;
+    static const TVector2D OneVector;
     
     static const TVector2D UpVector;
     static const TVector2D RightVector;
     static const TVector2D DownVector;
     static const TVector2D LeftVector;
 };
+
+template<typename T> inline constexpr TVector2D<T> TVector2D<T>::ZeroVector  = TVector2D( 0,  0);
+template<typename T> inline constexpr TVector2D<T> TVector2D<T>::OneVector   = TVector2D( 1,  1);
 
 template<typename T> inline constexpr TVector2D<T> TVector2D<T>::UpVector    = TVector2D( 0,  1);
 template<typename T> inline constexpr TVector2D<T> TVector2D<T>::RightVector = TVector2D( 1,  0);

@@ -56,7 +56,6 @@ public:
     }
     
     const CharType* operator*() const { return DataRaw; }
-    const CharType* GetCharArray() const { return DataRaw; }
     uint32 Len() const { return static_cast<uint32>(Count); }
     static constexpr uint32 Max() { return InMaxSize; }
     bool IsEmpty() const { return Count == 0; }
