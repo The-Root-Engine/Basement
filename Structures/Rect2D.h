@@ -18,6 +18,9 @@ public:
     explicit constexpr TRect2D(const TVector2D<T> InLocation, const TVector2D<T> InSize) : Location(InLocation), Size(InSize) {}
     explicit constexpr TRect2D(const T InLocationX, const T InLocationY, const T InSizeX, const T InSizeY) : Location(InLocationX, InLocationY), Size(InSizeX, InSizeY) {}
     
+    static constexpr TRect2D FromCenterAndHalfSize(const TVector2D<T> InCenter, const TVector2D<T> InHalfSize) { return TRect2D(InCenter - InHalfSize, InHalfSize * 2); }
+    static constexpr TRect2D FromCenterAndHalfSize(const T InCenterX, const T InCenterY, const T InHalfSizeX, const T InHalfSizeY) { return TRect2D(InCenterX - InHalfSizeX, InCenterY - InHalfSizeY, InHalfSizeX * 2, InHalfSizeY * 2); }
+    
     constexpr TVector2D<T> Min() const { return Location; }
     constexpr TVector2D<T> Max() const { return Location + Size; }
     constexpr TVector2D<T> Center() const { return Location + (Size * static_cast<T>(0.5)); }

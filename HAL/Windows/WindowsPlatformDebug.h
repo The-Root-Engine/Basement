@@ -28,7 +28,7 @@ public:
         SetUnhandledExceptionFilter(HandleCrashException);
     }
     
-    static void DebugBreak() { __debugbreak(); }
+    static inline void DebugBreak() { __debugbreak(); }
     
     static void Crash(const char* InCrashMessage)
     {

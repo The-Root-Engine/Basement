@@ -13,25 +13,25 @@ class FRamPlatformIO
 {
     
 public:
-    static FUniquePtr<FPlatformFile> OpenFile(const FPath& Path, const EFileAccessFlags Flags)
+    static FUniquePtr<FPlatformFile> OpenFile(const FPath& InPath, const EFileAccessFlags Flags)
     {
         if(EnumHasAnyFlags(Flags, EFileAccessFlags::CreateNew))
         {
             // FileSystem[Path].Empty();
-            if(auto* Pair = FindPair(Path)) Pair->Second.Empty();
-            else FileSystem.Emplace(Path, TArray<uint8>());
+            if(auto* Pair = FindPair(InPath)) Pair->Second.Empty();
+            else FileSystem.Emplace(InPath, TArray<uint8>());
         }
         
-        if(EnumHasAnyFlags(Flags, EFileAccessFlags::CreateIfNotExists) && !FileExists(Path)) // FileSystem[Path] = TArray<uint8>();
-            FileSystem.Emplace(Path, TArray<uint8>());
+        if(EnumHasAnyFlags(Flags, EFileAccessFlags::CreateIfNotExists) && !FileExists(InPath)) // FileSystem[Path] = TArray<uint8>();
+            FileSystem.Emplace(InPath, TArray<uint8>());
         
         // if(!FileExists(Path)) return nullptr;
         // TArray<uint8>* TargetData = &FileSystem[Path];
         
-        auto* Pair = FindPair(Path);
+        auto* Pair = FindPair(InPath);
         if(!Pair) return nullptr;
         
-        return std::make_unique<FRamPlatformFile>(&Pair->Second);
+        return std::make_unique<FPlatformFile>(&Pair->Second);
     }
     
     static bool FileExists(const FPath& Path)

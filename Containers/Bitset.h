@@ -12,6 +12,7 @@ public:
     using BlockType = uint8;
     
     TBitset() = default;
+    explicit constexpr TBitset(const uint8 InBlock0) { Blocks[0] = InBlock0; }
     
     bool operator==(const TBitset& InOther) const { return memcmp(Blocks, InOther.Blocks, sizeof(Blocks)) == 0; }
     bool operator!=(const TBitset& InOther) const { return !(*this == InOther); }

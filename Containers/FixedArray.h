@@ -5,6 +5,7 @@
 #include "../Allocators/DefaultAllocator.h"
 #include "../Basement.h"
 #include "../HAL/PlatformDebug.h"
+#include "../Macros/Assertion.h"
 #include "../Misc/Archive.h"
 
 template<typename T, uint32 N>
@@ -65,11 +66,7 @@ public:
     
     void SetNum(const uint32 InNewNum)
     {
-        if(InNewNum > N)
-        {
-            FPlatformDebug::Printf("TFixedArray Exception: Overflow! (SetNum)\n");
-            return;
-        }
+        check(InNewNum <= N, "TFixedArray Exception: Overflow! (SetNum)");
         
         for(uint32 i = Count; i < InNewNum; ++i)
             new(&DataRaw[i]) T();
@@ -88,11 +85,7 @@ public:
     
     void Add(const T& InValue)
     {
-        if(Count == N)
-        {
-            FPlatformDebug::Printf("TFixedArray Exception: Overflow! (Add &)\n");
-            return;
-        }
+        check(Count < N, "TFixedArray: Overflow! (Add &)");
         
         // new(&DataRaw[Count]) T(InValue);
         DataRaw[Count] = InValue;
@@ -101,11 +94,7 @@ public:
 	
     void Add(T&& InValue)
     {
-        if(Count == N)
-        {
-            FPlatformDebug::Printf("TFixedArray Exception: Overflow! (Add &&)\n");
-            return;
-        }
+        check(Count < N, "TFixedArray: Overflow! (Add &&)");
         
         // new(&DataRaw[Count]) T(Move(InValue));
         DataRaw[Count] = Move(InValue);
@@ -115,11 +104,7 @@ public:
     template <typename... Args>
     T& Emplace(Args&&... InArgs)
     {
-        if(Count == N)
-        {
-            FPlatformDebug::Printf("TFixedArray Exception: Overflow! (Emplace)\n");
-            return Last();
-        }
+        check(Count < N, "TFixedArray: Overflow! (Emplace)");
         
         // T* Slot = &DataRaw[Count];
         // new(Slot) T(Forward<Args>(InArgs)...);

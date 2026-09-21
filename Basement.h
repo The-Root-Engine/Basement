@@ -11,3 +11,5 @@ template<typename T> constexpr Meta::RemoveReference<T>&& Move(T&& InValue) noex
 
 template<typename T> constexpr T&& Forward(Meta::RemoveReference<T>&  InValue) noexcept { return Meta::Forward<T>(InValue); }
 template<typename T> constexpr T&& Forward(Meta::RemoveReference<T>&& InValue) noexcept { return Meta::Forward<T>(InValue); }
+
+template<typename T, typename U = T> constexpr T Exchange(T& InValue, U&& InNewValue) { T OldValue = Move(InValue); InValue = Forward<U>(InNewValue); return OldValue; }
